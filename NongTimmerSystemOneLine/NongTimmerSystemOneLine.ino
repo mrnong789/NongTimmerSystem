@@ -24,6 +24,8 @@ static int sensorInnitLine1 = 7;
 static int sensorStartLine1 = 11;
 static int sensorFinishLine1 = 8;
 
+static int ledInnit1 = 2;
+
 void setup() {
 
   delay(150);
@@ -35,6 +37,7 @@ void setup() {
 
 
   pinMode(buttonReset, INPUT);
+  pinMode(ledInnit1, OUTPUT);
 
   pinMode(sensorInnitLine1, INPUT);
   pinMode(sensorStartLine1, INPUT);
@@ -58,6 +61,11 @@ void loop() {
     segmentDisplay.setDigit(0, 0, 0, false);
 
   }
+
+
+    digitalWrite(ledInnit1, digitalRead(sensorInnitLine1));
+    
+ 
 
   if (digitalRead(sensorStartLine1) &&  startedLine1 == false && finishedLine1 == true) //start sensor
   {
