@@ -48,6 +48,8 @@ void setup() {
   pinMode(sensorStartLine1, INPUT);
   pinMode(sensorFinishLine1, INPUT);
 
+  initDisplay();
+
   DisplayTime(0);
 
 }
@@ -68,6 +70,8 @@ void DisplayTime(unsigned long number)
   digitalWrite(segmentLatch, LOW);
   digitalWrite(segmentLatch, HIGH); // Register moves storage register on the rising edge of RCK
 }
+
+
 
 // Sends a number to the display
 void postNumber(byte number)
@@ -123,14 +127,7 @@ void postNumber(byte number)
   }
 }
 
-
-void loop() {
-
-  //  long elapsedTime1  =   millis() - startTime1;
-  //  long _timeAll  = elapsedTime1;
-  //  DisplayTime(_timeAll);
-
-
+void timmerTrick() {
   if (digitalRead(buttonReset)) { //reset button
     startedLine1 = false;
     finishedLine1 = true;
@@ -162,8 +159,57 @@ void loop() {
     long elapsedTime1  =   millis() - startTime1;
     long _timeAll  = elapsedTime1;
     DisplayTime(_timeAll);
-    
+
   }
+}
+// Sends a number to the display
+void initDisplay()
+{
+  //    -  A
+  //   / / F/B
+  //    -  G
+  //   / / E/C
+  //    -. D/DP
+
+#define A  1<<0
+#define B  1<<6
+#define C  1<<5
+#define D  1<<4
+#define E  1<<3
+#define F  1<<1
+#define G  1<<2
+#define DP 1<<7
+
+  int counter = 0;
+  byte segmemts[] = {0, 6, 5, 4, 3, 1, 2};
+  // Write these bits out to the drivers
+  for (byte j = 0; j < 7; j++) {
+    for (byte i = 0; i < 5; i++) {
+      for (byte x = 0; x < 8; x++)
+      {
+        digitalWrite(segmentClock, LOW);
+        digitalWrite(segmentData, (1 << segmemts[j]) & 1 << (7 - x));
+        digitalWrite(segmentClock, HIGH); // Data transfers to the register on the rising edge of SRCK
+      }
+    }
+    // Latch the current segment data
+    digitalWrite(segmentLatch, LOW);
+    digitalWrite(segmentLatch, HIGH); // Register moves storage register on the rising edge of RCK
+
+    delay(99);
+    counter++;
+    if (counter > 100000) return;
+  }
+
+
+}
+void loop() {
+
+    long elapsedTime1  =   millis() - startTime1;
+    long _timeAll  = elapsedTime1;
+    DisplayTime(_timeAll);
+
+
 
 
 
