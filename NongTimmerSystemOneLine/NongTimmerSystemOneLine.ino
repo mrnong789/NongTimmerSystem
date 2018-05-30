@@ -48,67 +48,75 @@ void setup() {
 
 
 void loop() {
+    segmentDisplay.setDigit(0, 4, 8, false);
+    segmentDisplay.setDigit(0, 3, 8, true);
+    segmentDisplay.setDigit(0, 2, 8, false);
+    segmentDisplay.setDigit(0, 1, 8, false);
+    segmentDisplay.setDigit(0, 0, 8, false);
+    delay(5000);
+    segmentDisplay.clearDisplay(0);
+    delay(5000);
+   
 
-
-  if (digitalRead(buttonReset)) { //reset button
-    startedLine1 = false;
-    finishedLine1 = true;
-
-    segmentDisplay.setDigit(0, 4, 0, false);
-    segmentDisplay.setDigit(0, 3, 0, true);
-    segmentDisplay.setDigit(0, 2, 0, false);
-    segmentDisplay.setDigit(0, 1, 0, false);
-    segmentDisplay.setDigit(0, 0, 0, false);
-
-  }
-
-
-    digitalWrite(ledInnit1, digitalRead(sensorInnitLine1));
-    
- 
-
-  if (digitalRead(sensorStartLine1) &&  startedLine1 == false && finishedLine1 == true) //start sensor
-  {
-    startedLine1 = true;
-    finishedLine1 = false;
-    startTime1 = millis();
-
-  }
-
-  if (digitalRead(sensorFinishLine1)) { // finish sensor
-
-    startedLine1 = false;
-    finishedLine1 = false;
-
-  }
-
-  if (startedLine1 == true)
-  {
-    long elapsedTime1  =   millis() - startTime1;
-    long _timeAll  = elapsedTime1;
-    long _time_milli = _timeAll % 1000;
-    long _time_digit1 = _timeAll / 1000;
-    long _time_digit2 = _time_milli / 100;
-    long _time_digit3 = (_time_milli % 100) / 10;
-    long _time_digit4 = ((_time_milli % 100) % 10);
-
-    if (_time_digit1 < 10) {
-      segmentDisplay.setDigit(0, 4, 0, false);
-      segmentDisplay.setDigit(0, 3, _time_digit1, true);
-      segmentDisplay.setDigit(0, 2, _time_digit2, false);
-      segmentDisplay.setDigit(0, 1, _time_digit3, false);
-      segmentDisplay.setDigit(0, 0, _time_digit4, false);
-
-    } else if (_time_digit1 >= 10) {
-      segmentDisplay.setDigit(0, 4, _time_digit1 / 10, false);
-      segmentDisplay.setDigit(0, 3, _time_digit1 % 10, true);
-      segmentDisplay.setDigit(0, 2, _time_digit2, false);
-      segmentDisplay.setDigit(0, 1, _time_digit3, false);
-      segmentDisplay.setDigit(0, 0, _time_digit4, false);
-    }
-
-
-  }
+//  if (digitalRead(buttonReset)) { //reset button
+//    startedLine1 = false;
+//    finishedLine1 = true;
+//
+//    segmentDisplay.setDigit(0, 4, 0, false);
+//    segmentDisplay.setDigit(0, 3, 0, true);
+//    segmentDisplay.setDigit(0, 2, 0, false);
+//    segmentDisplay.setDigit(0, 1, 0, false);
+//    segmentDisplay.setDigit(0, 0, 0, false);
+//
+//  }
+//
+//
+//    digitalWrite(ledInnit1, digitalRead(sensorInnitLine1));
+//    
+// 
+//
+//  if (digitalRead(sensorStartLine1) &&  startedLine1 == false && finishedLine1 == true) //start sensor
+//  {
+//    startedLine1 = true;
+//    finishedLine1 = false;
+//    startTime1 = millis();
+//
+//  }
+//
+//  if (digitalRead(sensorFinishLine1)) { // finish sensor
+//
+//    startedLine1 = false;
+//    finishedLine1 = false;
+//
+//  }
+//
+//  if (startedLine1 == true)
+//  {
+//    long elapsedTime1  =   millis() - startTime1;
+//    long _timeAll  = elapsedTime1;
+//    long _time_milli = _timeAll % 1000;
+//    long _time_digit1 = _timeAll / 1000;
+//    long _time_digit2 = _time_milli / 100;
+//    long _time_digit3 = (_time_milli % 100) / 10;
+//    long _time_digit4 = ((_time_milli % 100) % 10);
+//
+//    if (_time_digit1 < 10) {
+//      segmentDisplay.setDigit(0, 4, 0, false);
+//      segmentDisplay.setDigit(0, 3, _time_digit1, true);
+//      segmentDisplay.setDigit(0, 2, _time_digit2, false);
+//      segmentDisplay.setDigit(0, 1, _time_digit3, false);
+//      segmentDisplay.setDigit(0, 0, _time_digit4, false);
+//
+//    } else if (_time_digit1 >= 10) {
+//      segmentDisplay.setDigit(0, 4, _time_digit1 / 10, false);
+//      segmentDisplay.setDigit(0, 3, _time_digit1 % 10, true);
+//      segmentDisplay.setDigit(0, 2, _time_digit2, false);
+//      segmentDisplay.setDigit(0, 1, _time_digit3, false);
+//      segmentDisplay.setDigit(0, 0, _time_digit4, false);
+//    }
+//
+//
+//  }
 
 
 
