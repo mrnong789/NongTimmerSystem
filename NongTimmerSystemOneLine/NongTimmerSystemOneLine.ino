@@ -1,17 +1,9 @@
-#include "LedControl.h"
-
-/*
-  Now we need a LedControl to work with.
- ***** These pin numbers will probably not work with your hardware *****
-  pin 6 is connected to the DataIn
-  pin 9 is connected to the CLK
-  pin 10 is connected to LOAD
-  We have only a single MAX72XX.
-*/
-LedControl segmentDisplay = LedControl(6, 9, 10, 1);
-
-
-
+#include <Wire.h>
+#include <math.h>
+// Mega Pin I/O definitions
+byte segmentClock = 12;   // PWM
+byte segmentLatch = 11;   // PWM
+byte segmentData = 10;
 long startTime1 = 0;
 
 bool startedLine1 = false;
@@ -21,20 +13,23 @@ bool finishedLine1 = false;
 static int buttonReset = 3;
 
 static int sensorInnitLine1 = 7;
-static int sensorStartLine1 = 11;
-static int sensorFinishLine1 = 8;
+static int sensorStartLine1 = 8;
+static int sensorFinishLine1 = 9;
 
 static int ledInnit1 = 2;
 
 void setup() {
 
   delay(150);
-  segmentDisplay.shutdown(0, false);
-  /* Set the brightness to a medium values */
-  segmentDisplay.setIntensity(0, 8);
-  /* and clear the display */
-  segmentDisplay.clearDisplay(0);
+  Wire.begin();
+  
+  pinMode(segmentClock, OUTPUT);
+  pinMode(segmentData, OUTPUT);
+  pinMode(segmentLatch, OUTPUT);
 
+  digitalWrite(segmentClock, LOW);
+  digitalWrite(segmentData, LOW);
+  digitalWrite(segmentLatch, LOW);
 
   pinMode(buttonReset, INPUT);
   pinMode(ledInnit1, OUTPUT);
@@ -46,18 +41,80 @@ void setup() {
 
 }
 
+unsigned int convertDectoDigit(unsigned long number,int digit){
+  return (number / (int)pow(10,digit)) % 10;
+}
+void DisplayTime(unsigned long number)
+{
+  for(int i=0;i<5;i++){
+    postNumber(convertDectoDigit(number,i));
+  }
+
+  // Latch the current segment data
+  digitalWrite(segmentLatch, LOW);
+  digitalWrite(segmentLatch, HIGH); // Register moves storage register on the rising edge of RCK
+}
+
+// Sends a number to the display
+void postNumber(byte number)
+{
+//    -  A
+//   / / F/B
+//    -  G
+//   / / E/C
+//    -. D/DP
+
+#define A  1<<0
+#define B  1<<6
+#define C  1<<5
+#define D  1<<4
+#define E  1<<3
+#define F  1<<1
+#define G  1<<2
+#define DP 1<<7
+
+  byte segments;
+
+  switch (number)
+  {
+    case 1: segments = B | C;
+      break;
+    case 2: segments = A | B | D | E | G;
+      break;
+    case 3: segments = A | B | C | D | G;
+      break;
+    case 4: segments = B | C | F | G;
+      break;
+    case 5: segments = A | C | D | F | G;
+      break;
+    case 6: segments = A | C | D | E | F | G;
+      break;
+    case 7: segments = A | B | C;
+      break;
+    case 8: segments = A | B | C | D | E | F | G;
+      break;
+    case 9: segments = A | B | C | D | F | G;
+      break;
+    case 0: segments = A | B | C | D | E | F;
+      break;
+  }
+  segments |= DP; // Turn on all the decimal point pins as we need them on digit 3 for the colon.
+
+  // Write these bits out to the drivers
+  for (byte x = 0; x < 8; x++)
+  {
+    digitalWrite(segmentClock, LOW);
+    digitalWrite(segmentData, segments & 1 << (7 - x));
+    digitalWrite(segmentClock, HIGH); // Data transfers to the register on the rising edge of SRCK
+  }
+}
 
 void loop() {
-    segmentDisplay.setDigit(0, 4, 8, false);
-    segmentDisplay.setDigit(0, 3, 8, true);
-    segmentDisplay.setDigit(0, 2, 8, false);
-    segmentDisplay.setDigit(0, 1, 8, false);
-    segmentDisplay.setDigit(0, 0, 8, false);
-    delay(5000);
-    segmentDisplay.clearDisplay(0);
-    delay(5000);
-   
-
+    
+for(int i=0;i<100000;i++){
+  DisplayTime(i);
+  delay(1);
+ }
 //  if (digitalRead(buttonReset)) { //reset button
 //    startedLine1 = false;
 //    finishedLine1 = true;
