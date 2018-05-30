@@ -1,22 +1,32 @@
+//Nong Timmer System//
+//For drag racing
+//Create at 2018
+
 #include <Wire.h>
 #include <math.h>
-// Mega Pin I/O definitions
+
+// Pin for 7-segment driver
 byte segmentClock = 12;   // PWM
 byte segmentLatch = 11;   // PWM
 byte segmentData = 10;
-long startTime1 = 0;
 
+// Pin button reset
+byte buttonReset = 3;
+
+// Pin sensor
+byte sensorInnitLine1 = 7;
+byte sensorStartLine1 = 8;
+byte sensorFinishLine1 = 9;
+
+//Pin led line init
+byte ledInnit1 = 2;
+
+// init parameter
+long startTime1 = 0;
 bool startedLine1 = false;
 bool finishedLine1 = false;
 
 
-static int buttonReset = 3;
-
-static int sensorInnitLine1 = 7;
-static int sensorStartLine1 = 8;
-static int sensorFinishLine1 = 9;
-
-static int ledInnit1 = 2;
 
 void setup() {
 
@@ -42,9 +52,12 @@ void setup() {
 
 }
 
+// Function split digit from number
 unsigned int convertDectoDigit(unsigned long number, int digit) {
   return (number / (int)pow(10, digit)) % 10;
 }
+
+// Function Display time
 void DisplayTime(unsigned long number)
 {
   for (int i = 0; i < 5; i++) {
@@ -110,51 +123,47 @@ void postNumber(byte number)
   }
 }
 
+
 void loop() {
 
-  //for(int i=0;i<100000;i++){
-  //  DisplayTime(i);
-  //  delay(1);
-  //}
-  long elapsedTime1  =   millis() - startTime1;
-  long _timeAll  = elapsedTime1;
-  DisplayTime(_timeAll);
+  //  long elapsedTime1  =   millis() - startTime1;
+  //  long _timeAll  = elapsedTime1;
+  //  DisplayTime(_timeAll);
 
 
-//  if (digitalRead(buttonReset)) { //reset button
-//    startedLine1 = false;
-//    finishedLine1 = true;
-//    DisplayTime(0);
-//  }
-//
-//
-//  digitalWrite(ledInnit1, digitalRead(sensorInnitLine1));
-//
-//
-//
-//  if (digitalRead(sensorStartLine1) &&  startedLine1 == false && finishedLine1 == true) //start sensor
-//  {
-//    startedLine1 = true;
-//    finishedLine1 = false;
-//    startTime1 = millis();
-//
-//  }
-//
-//  if (digitalRead(sensorFinishLine1)) { // finish sensor
-//
-//    startedLine1 = false;
-//    finishedLine1 = false;
-//
-//  }
-//
-//  if (startedLine1 == true)
-//  {
-//    long elapsedTime1  =   millis() - startTime1;
-//    long _timeAll  = elapsedTime1;
-//    DisplayTime(_timeAll);
-//
-//
-//  }
+  if (digitalRead(buttonReset)) { //reset button
+    startedLine1 = false;
+    finishedLine1 = true;
+    DisplayTime(0);
+  }
+
+
+  digitalWrite(ledInnit1, digitalRead(sensorInnitLine1));
+
+
+
+  if (digitalRead(sensorStartLine1) &&  startedLine1 == false && finishedLine1 == true) //start sensor
+  {
+    startedLine1 = true;
+    finishedLine1 = false;
+    startTime1 = millis();
+
+  }
+
+  if (digitalRead(sensorFinishLine1)) { // finish sensor
+
+    startedLine1 = false;
+    finishedLine1 = false;
+
+  }
+
+  if (startedLine1 == true)
+  {
+    long elapsedTime1  =   millis() - startTime1;
+    long _timeAll  = elapsedTime1;
+    DisplayTime(_timeAll);
+    
+  }
 
 
 
