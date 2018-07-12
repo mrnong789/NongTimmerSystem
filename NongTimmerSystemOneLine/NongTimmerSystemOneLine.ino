@@ -6,25 +6,25 @@
 #include <math.h>
 
 // Pin for 7-segment driver
-byte segmentClock = 12;   // PWM
-byte segmentLatch = 11;   // PWM
-byte segmentData = 10;
+byte segmentClock = 12;
+byte segmentLatch = 11;
+byte segmentData  = 10;
 
 // Pin button reset
 byte buttonReset = 3;
 
 // Pin sensor
-byte sensorInnitLine1 = 7;
-byte sensorStartLine1 = 8;
-byte sensorFinishLine1 = 9;
+byte sensorInnitLine1   = 7;
+byte sensorStartLine1   = 8;
+byte sensorFinishLine1  = 9;
 
 //Pin led line init
 byte ledInnit1 = 2;
 
 // init parameter
-long startTime1 = 0;
-bool startedLine1 = false;
-bool finishedLine1 = false;
+long startTime1     = 0;
+bool startedLine1   = false;
+bool finishedLine1  = false;
 
 
 
@@ -60,8 +60,7 @@ unsigned int convertDectoDigit(unsigned long number, int digit) {
 }
 
 // Function Display time
-void DisplayTime(unsigned long number)
-{
+void DisplayTime(unsigned long number) {
   for (int i = 0; i < 5; i++) {
     postNumber(convertDectoDigit(number, i));
   }
@@ -74,8 +73,7 @@ void DisplayTime(unsigned long number)
 
 
 // Sends a number to the display
-void postNumber(byte number)
-{
+void postNumber(byte number)  {
   //    -  A
   //   / / F/B
   //    -  G
@@ -93,8 +91,7 @@ void postNumber(byte number)
 
   byte segments;
 
-  switch (number)
-  {
+  switch (number) {
     case 1: segments = B | C;
       break;
     case 2: segments = A | B | D | E | G;
@@ -119,8 +116,7 @@ void postNumber(byte number)
   segments |= DP; // Turn on all the decimal point pins as we need them on digit 3 for the colon.
 
   // Write these bits out to the drivers
-  for (byte x = 0; x < 8; x++)
-  {
+  for (byte x = 0; x < 8; x++) {
     digitalWrite(segmentClock, LOW);
     digitalWrite(segmentData, segments & 1 << (7 - x));
     digitalWrite(segmentClock, HIGH); // Data transfers to the register on the rising edge of SRCK
@@ -134,17 +130,13 @@ void timmerTrick() {
     DisplayTime(0);
   }
 
-
   digitalWrite(ledInnit1, digitalRead(sensorInnitLine1));
-
-
 
   if (digitalRead(sensorStartLine1) &&  startedLine1 == false && finishedLine1 == true) //start sensor
   {
     startedLine1 = true;
     finishedLine1 = false;
     startTime1 = millis();
-
   }
 
   if (digitalRead(sensorFinishLine1)) { // finish sensor
@@ -163,8 +155,7 @@ void timmerTrick() {
   }
 }
 // Sends a number to the display
-void initDisplay()
-{
+void initDisplay() {
   //    -  A
   //   / / F/B
   //    -  G
@@ -183,35 +174,40 @@ void initDisplay()
   int counter = 0;
   byte segmemts[] = {0, 6, 5, 4, 3, 1, 2};
   // Write these bits out to the drivers
-  for (byte j = 0; j < 7; j++) {
-    for (byte i = 0; i < 5; i++) {
-      for (byte x = 0; x < 8; x++)
-      {
-        digitalWrite(segmentClock, LOW);
-        digitalWrite(segmentData, (1 << segmemts[j]) & 1 << (7 - x));
-        digitalWrite(segmentClock, HIGH); // Data transfers to the register on the rising edge of SRCK
-      }
-    }
-    // Latch the current segment data
-    digitalWrite(segmentLatch, LOW);
-    digitalWrite(segmentLatch, HIGH); // Register moves storage register on the rising edge of RCK
-
-    delay(99);
+  while (1) {
     counter++;
-    if (counter > 100000) return;
+    if (counter > 3) return;
+
+    for (byte j = 0; j < 7; j++) {
+      for (byte i = 0; i < 5; i++) {
+        for (byte x = 0; x < 8; x++) {
+          digitalWrite(segmentClock, LOW);
+          digitalWrite(segmentData, (1 << segmemts[j]) & 1 << (7 - x));
+          digitalWrite(segmentClock, HIGH); // Data transfers to the register on the rising edge of SRCK
+        }
+      }
+      // Latch the current segment data
+      digitalWrite(segmentLatch, LOW);
+      digitalWrite(segmentLatch, HIGH); // Register moves storage register on the rising edge of RCK
+
+      delay(99);
+
+    }
   }
-
-
 }
+
 void loop() {
 
-    long elapsedTime1  =   millis() - startTime1;
-    long _timeAll  = elapsedTime1;
-    DisplayTime(_timeAll);
+  long elapsedTime1  =   millis() - startTime1;
+  long _timeAll  = elapsedTime1;
+
+  DisplayTime(_timeAll);
 
 
-
-
-
+  //  for(int i=0;i<100000;i++){
+  //     DisplayTime(i);
+  //     delay(80);
+  //
+  //    }
 }
 
