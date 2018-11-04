@@ -61,7 +61,7 @@ unsigned int convertDectoDigit(unsigned long number, int digit) {
 
 // Function Display time
 void DisplayTime(unsigned long number) {
-  for (int i = 0; i < 5; i++) {
+  for (int i = 4; i >= 0; i--) {
     postNumber(convertDectoDigit(number, i));
   }
 
@@ -200,8 +200,20 @@ void loop() {
 
   long elapsedTime1  =   millis() - startTime1;
   long _timeAll  = elapsedTime1;
+  if(_timeAll >= 99899){
+   
+    initDisplay();
 
-  DisplayTime(_timeAll);
+    DisplayTime(0);
+     startTime1 = millis();
+  }else{
+     DisplayTime(_timeAll);
+  }
+ 
+  
+
+  
+
 
 
   //  for(int i=0;i<100000;i++){
@@ -210,4 +222,3 @@ void loop() {
   //
   //    }
 }
-
