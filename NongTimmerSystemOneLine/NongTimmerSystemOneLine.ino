@@ -1,6 +1,8 @@
 //Nong Timmer System//
 //For drag racing
 //Create at 2018
+//Success on 2020
+//Dev by Mrnong789
 
 #include <Wire.h>
 #include <math.h>
