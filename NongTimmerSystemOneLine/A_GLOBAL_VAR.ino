@@ -4,4 +4,7 @@
 
 // #define PIN_SEGMENT_CLOCK 13
 
+int xxx = 0;
+int startTime = 0;
+
 void led_blink();
