@@ -1,5 +1,5 @@
 {
     "board": "arduino:avr:uno",
     "sketch": "NongTimmerSystemOneLine.ino",
-    "port": "COM3"
+    "port": "COM4"
 }
